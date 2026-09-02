@@ -55,6 +55,7 @@ function AgentPage() {
   const awaiting = opportunities.filter(
     (o) => o.status === "APPROVED" || o.status === "EXECUTING",
   ).length;
+  const topOpportunity = opportunities[0];
   const recommended = opportunities.filter((o) => o.recommendedAction !== "NO_ACTION").length;
 
   function send(text: string) {
@@ -178,9 +179,9 @@ function AgentPage() {
           <div className="mt-5 rounded-lg border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
             Highest-value recommendation:{" "}
             <span className="font-medium text-foreground">
-              {actionLabel[opportunities[0].recommendedAction]}
+              {topOpportunity ? actionLabel[topOpportunity.recommendedAction] : "—"}
             </span>{" "}
-            for {customerOf(opportunities[0]).name}.
+            for {topOpportunity ? customerOf(topOpportunity).name : "—"}.
           </div>
         </section>
       </div>

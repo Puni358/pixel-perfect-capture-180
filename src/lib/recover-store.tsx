@@ -50,6 +50,14 @@ interface RecoverContextValue {
 
 const RecoverContext = createContext<RecoverContextValue | null>(null);
 
+const fallbackCustomer: Customer = {
+  id: "cus_unknown",
+  name: "Unknown customer",
+  email: "",
+  successfulPayments: 0,
+  lifetimeValue: 0,
+};
+
 let seq = 0;
 const nextId = (prefix: string) => `${prefix}_${Date.now().toString(36)}_${seq++}`;
 
@@ -67,7 +75,7 @@ export function RecoverProvider({ children }: { children: ReactNode }) {
 
   const customerOf = useCallback(
     (opportunity: Opportunity) =>
-      demoCustomers.find((c) => c.id === opportunity.customerId) ?? demoCustomers[0],
+      demoCustomers.find((c) => c.id === opportunity.customerId) ?? fallbackCustomer,
     [],
   );
 
@@ -261,7 +269,7 @@ export function answerAgentQuestion(
       b.recoveryProbability * b.amount - a.recoveryProbability * a.amount,
   )[0];
 
-  const named = opportunities.find((o) => q.includes(customerOf(o).name.split(" ")[0].toLowerCase()));
+  const named = opportunities.find((o) => q.includes((customerOf(o).name.split(" ")[0] ?? "").toLowerCase()));
 
   if (named && (q.includes("why") || q.includes("worth") || q.includes("chose") || q.includes("choose"))) {
     return `${customerOf(named).name} · ${inr(named.amount)} at risk (${opportunityTypeLabel[named.opportunityType]}${named.failureReason ? ` — ${named.failureReason}` : ""}).\n\nRecovery probability is ${named.recoveryProbability}%. ${named.aiReasoning}\n\nRecommended action: ${actionLabel[named.recommendedAction]}. ${named.actionRationale}`;
