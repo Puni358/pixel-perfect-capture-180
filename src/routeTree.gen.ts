@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AgentRouteImport } from './routes/agent'
 import { Route as OpportunitiesIndexRouteImport } from './routes/opportunities.index'
 import { Route as OpportunitiesIdRouteImport } from './routes/opportunities.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentRoute = AgentRouteImport.update({
+  id: '/agent',
+  path: '/agent',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OpportunitiesIndexRoute = OpportunitiesIndexRouteImport.update({
@@ -31,30 +37,34 @@ const OpportunitiesIdRoute = OpportunitiesIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/agent': typeof AgentRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
   '/opportunities/': typeof OpportunitiesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/agent': typeof AgentRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
   '/opportunities': typeof OpportunitiesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/agent': typeof AgentRoute
   '/opportunities/$id': typeof OpportunitiesIdRoute
   '/opportunities/': typeof OpportunitiesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/opportunities/$id' | '/opportunities/'
+  fullPaths: '/' | '/agent' | '/opportunities/$id' | '/opportunities/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/opportunities/$id' | '/opportunities'
-  id: '__root__' | '/' | '/opportunities/$id' | '/opportunities/'
+  to: '/' | '/agent' | '/opportunities/$id' | '/opportunities'
+  id: '__root__' | '/' | '/agent' | '/opportunities/$id' | '/opportunities/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AgentRoute: typeof AgentRoute
   OpportunitiesIdRoute: typeof OpportunitiesIdRoute
   OpportunitiesIndexRoute: typeof OpportunitiesIndexRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agent': {
+      id: '/agent'
+      path: '/agent'
+      fullPath: '/agent'
+      preLoaderRoute: typeof AgentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/opportunities/': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AgentRoute: AgentRoute,
   OpportunitiesIdRoute: OpportunitiesIdRoute,
   OpportunitiesIndexRoute: OpportunitiesIndexRoute,
 }
